@@ -1,0 +1,1 @@
+"0","knitr::kable(head(efna %>% arrange(-year, -efna_index), n = 10))"
