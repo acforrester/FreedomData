@@ -1,0 +1,118 @@
+---
+title: "An Overview of the EFNA"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{An Overview of the EFNA}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r init, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
+my_colors <- function (palette = "cb") 
+{
+    cb_palette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", 
+        "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+    rcb_palette <- rev(cb_palette)
+    bly_palette <- c("#E69F00", "#0072B2", "#000000", "#56B4E9", 
+        "#009E73", "#F0E442", "#D55E00", "#CC79A7")
+    
+    if (palette == "cb") 
+        return(cb_palette)
+    else if (palette == "rcb") 
+        return(rcb_palette)
+    else if (palette == "bly") 
+        return(bly_palette)
+    else stop("Choose cb, rcb, or bly only.")
+}
+
+
+```
+
+# Introduction
+
+The *Economic Freedom of North America* (EFNA) data from Stansel et al. is a 
+subnational analog to the *Economic Freedom of the World* (EFW) reports that 
+measures the degree to which subnational entities in the United States, Canada, 
+and Mexico support the principles of economic freedom and free exchange. The
+index itself is comprised of 10 variables across three general areas listed below.
+
+| Area      | Description                       |
+| :-------- | :-------------------------------- |
+| Area 1    | Government Spending               |
+| Area 2    | Taxes                             |
+| Area 3    | Labor Market Freedom              |
+
+Currently, the `FreedomData` package only includes data for the U.S. states. I may 
+expand this in the future to include Canada and Mexico.
+
+# The `FreedomData` Package
+
+In this article I highlight the usage of this simple data package and elucidate some key caveats with the EFW dataset. My baseline assumption is that the end user will make use of the common [`tidyverse`](https://tidyverse.org/) set of tools to examine and analyze these data. To highlight some features of the data of the data I will also use [`plotly`](https://plotly-r.com/) to make interactive charts.
+
+```{r packages}
+# load packages to use
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(tidyverse,
+               plotly,
+               DT)
+```
+
+## Loading the Data from the `FreedomData` Package
+
+First we load the package.
+```{r setup}
+library(FreedomData)
+```
+
+I will begin with the *EFNA* panel dataset.
+```{r LoadData}
+data("efna")
+```
+
+## A Simple Time Series Analysis
+
+The `EFNA` dataset covers the 50 continental U.S. states with the exclusion of 
+the District of Columbia and the U.S. territories. The indexes themselves are
+produced on an annual basis from 1981-present.
+
+First, let's see what's included in the `EFNA` data by showing the top 10 most 
+free states in the latest year. 
+
+```{r header}
+knitr::kable(head(efna %>% arrange(-year, -efna_index), n = 10))
+```
+
+Let's see how the top 5 states in 2019 evolved over time.
+
+```{r trends}
+# top 5 from above
+top_states <- c("NH", "FL", "VA", "TX", "TN")
+
+p <- efna %>% 
+  filter(usps %in% top_states) %>% 
+  ggplot(data = .,
+         aes(x = year,
+             y = efna_index,
+             color = state_name)) +
+  geom_line() +
+  theme_minimal() +
+  scale_color_manual(values = my_colors("cb")[1:7],
+                    guide = "none")+
+  labs(title = "Economic Freedom by State, 1981-2018",
+       caption = "Source: Stansel et al. (2020)",
+       x = "",
+       y = "Avg. Economic Freedom Score")
+
+# render plot
+plotly::ggplotly(p)
+
+```
+
+# References
+
+Dean Stansel, José Torra, and Fred McMahon (2020). *Economic Freedom of North America 2020*. Fraser Institute. [https://www.fraserinstitute.org/studies/economic-freedom-of-north-america-2020](https://www.fraserinstitute.org/studies/economic-freedom-of-north-america-2020)
