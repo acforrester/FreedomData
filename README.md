@@ -7,7 +7,7 @@
 ## About
 
 `FreedomData` is a data package that contains measures of economic
-freedom for across countries and the U.S. states from two sources:
+freedom for countries and the U.S. states from two sources:
 
 1.  Economic Freedom of the World (EFW)
 2.  Economic Freedom of North America (EFNA)
