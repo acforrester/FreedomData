@@ -66,6 +66,7 @@ pacman::p_load(tidyverse,
 
 First we load the package.
 ```{r setup}
+# load data
 library(FreedomData)
 ```
 
@@ -84,24 +85,51 @@ First, let's see what's included in the `EFNA` data by showing the top 10 most
 free states in the latest year. 
 
 ```{r header}
-knitr::kable(head(efna %>% arrange(-year, -efna_index), n = 10))
+# view EFNA header
+efna %>% 
+  arrange(-year, -efna_index) %>% 
+  filter(row_number() <= 10) %>% 
+  modify_at(5:8, ~round(.x, 2)) %>%
+  
+  # subset and rename
+  select(`USPS` = usps,
+         `State Name` = state_name,
+         `EFNA Index` = efna_index,
+         `Area 1: Spending`      = efna_spending,
+         `Area 2: Taxation`      = efna_taxation,
+         `Area 3: Labor Markets` = efna_lab_mkt,
+         ) %>% 
+  knitr::kable(.)
+
 ```
 
 Let's see how the top 5 states in 2019 evolved over time.
 
 ```{r trends}
-# top 5 from above
-top_states <- c("NH", "FL", "VA", "TX", "TN")
+# top and bottom
+efna %>% 
+  arrange(-year, -efna_index) %>% 
+  filter(year == max(year),
+         row_number() <= 3 | row_number() >= 48) %>% 
+  pull(usps) -> top_states
 
 p <- efna %>% 
   filter(usps %in% top_states) %>% 
+  mutate(efna_index = round(efna_index, 2)) %>% 
+  
+  # subset and rename cols
+  select(`EFNA Index` = efna_index,
+         `State Name` = state_name,
+         `Year`       = year) %>% 
+  
+  # now produce plot
   ggplot(data = .,
-         aes(x = year,
-             y = efna_index,
-             color = state_name)) +
+         aes(x = `Year`,
+             y = `EFNA Index`,
+             color = `State Name`)) +
   geom_line() +
   theme_minimal() +
-  scale_color_manual(values = my_colors("cb")[1:7],
+  scale_color_manual(values = my_colors("cb")[1:6],
                     guide = "none")+
   labs(title = "Economic Freedom by State, 1981-2018",
        caption = "Source: Stansel et al. (2020)",

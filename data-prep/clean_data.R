@@ -2,11 +2,11 @@
 #
 # AC Forrester
 #
-# Collect and clean the economic freedom scores from the Economic Freedom of
-# the World (EFW) and the Economic Freedom of North America (EFNA) reports for
-# 2020.
+#  Collect and clean the economic freedom scores from the Economic Freedom of
+#  the World (EFW), the Human Freedom Index (HFI), and the Economic Freedom of
+#  North America (EFNA) reports for various years.
 #
-# Citations in README.md
+#  Citations in README.md
 #
 # ******************************************************************************
 
@@ -17,9 +17,9 @@ pacman::p_load(tidyverse)
 # -------------------------------------------------------------------------
 # Metadata from the World Bank:
 #
-# In this step I add in World Bank region and income group classifiers to
-# join on the EFW data in place of the provided regions. This modification
-# adds the World Bank's region code and the income group
+#  In this step I add in World Bank region and income group classifiers to
+#  join on the EFW data in place of the provided regions. This modification
+#  adds the World Bank's region code and the income group.
 # -------------------------------------------------------------------------
 
 
@@ -55,8 +55,8 @@ wb_group <- wb_group %>%
 # -------------------------------------------------------------------------
 # Economic Freedom of the World (EFW)
 #
-# Download and clean up the Gwartney et al. Economic Freedom of the World
-# (EFW) data.
+#  Download and clean up the Gwartney et al. Economic Freedom of the World
+#  (EFW) data. Also add in World Bank regions and income groups.
 # -------------------------------------------------------------------------
 
 # EFW data
@@ -91,6 +91,55 @@ efwpnl <- readxl::read_excel(file, sheet = 2) %>%
 # save internal data
 usethis::use_data(efwpnl, overwrite = T)
 
+# -------------------------------------------------------------------------
+# Human Freedom Index
+#
+#  Download and clean up the Vásquez & McMahon Human Freedom Index (HFI)
+#  dataset. Also add in World Bank regions and income groups and fix one
+#  ISO alpha-3 code (Barbados).
+# -------------------------------------------------------------------------
+
+
+# EFW data
+url  = "https://www.fraserinstitute.org/sites/default/files/human-freedom-index-2020-data-tables-figures.xlsx"
+file = paste0("data-prep/", basename(url))
+
+# download file
+if (!file.exists(file)) {
+  download.file(url, file, mode = "wb")
+}
+
+# now clean up the EFW data
+hfipnl <- readxl::read_excel(file, sheet = 1, skip = 4) %>%
+  select(
+    year             = `Year`,
+    iso_code         = `ISO Code`,
+    country_name     = `Countries`,
+    human_freedom    = `HUMAN FREEDOM (Score)`,
+    personal_freedom = `PERSONAL FREEDOM (Score)`,
+    economic_freedom = `ECONOMIC FREEDOM (Score)`,
+    rule_of_law      = `Rule of Law`,
+    security_safety  = `Security & Safety`,
+    movement         = `Movement`,
+    religion         = `Religion`,
+    assoc_civil_soc  = `Association, Assembly, & Civil Society`,
+    expression_info  = `Expression & Information`,
+    identity_relatns = `Identity & Relationships`
+  ) %>%
+  # data fixes
+  mutate(iso_code = gsub("BRD", "BRB", iso_code)) %>%
+  modify_at(4:13, as.numeric) %>%
+  # join on the World Bank metadata
+  left_join(., wb_group, by = "iso_code") %>%
+  relocate(iso_code, country_name, year,
+           region_code, region_name, income_group) %>%
+  select(-wb_name) %>%
+  arrange(iso_code, year)
+
+# save internal data
+usethis::use_data(hfipnl, overwrite = T)
+
+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
 # -------------------------------------------------------------------------
 # Economic Freedom of North America (EFNA)
 #
@@ -128,3 +177,7 @@ efna <- readxl::read_excel(file, sheet = 1) %>%
 
 # save internal data
 usethis::use_data(efna, overwrite = T)
+
+
+
+

@@ -67,7 +67,7 @@ pacman::p_load(tidyverse,
 ```
 
 # Loading the Data from the `FreedomData` Package
-```{r setup}
+```{r setup, echo=FALSE}
 library(EconFreedom)
 ```
 
@@ -80,7 +80,12 @@ data("efwpnl")
 
 First, let's see what the first few rows of the data look like and what variables we have available using `head()` to show the first 10 rows. In the first few columns we have the main country ID variables, including the ISO Alpha-3 code, the country name, the data year, and its geographic and income groupings according to the World Bank Group. I added in the World Bank's 3-digit region code and income group to facilitate further merging of these data and analyses. These identifiers are sourced directly from the World Bank [here](https://datahelpdesk.worldbank.org/knowledgebase/articles/906519-world-bank-country-and-lending-groups). The remaining columns are the composite and individual area economic freedom scores.
 ```{r efw}
-head(efwpnl %>% arrange(-year, iso_code), n = 10)
+# header of the EFW data
+efwpnl %>% 
+  arrange(-year, iso_code) %>% 
+  head(., n = 10) %>% 
+  knitr::kable(., digits = 2)
+
 ```
 
 # A Quick Descriptive Analysis
@@ -91,17 +96,23 @@ will use the `tidyverse` and `plotly` packages to parse and analyze the data.
 ## Economic Freedom by Region
 
 ```{r regions}
-
+# EFW by region
 p <- efwpnl %>% 
   filter(year == 2019) %>% 
   group_by(region_name) %>% 
-  summarize(efw_index = mean(efw_index, na.rm = T)) %>% 
+  summarize(efw_index = round(mean(efw_index, na.rm = T),2)) %>% 
+  
+  # subset and rename cols
+  select(`Region Name` = region_name,
+         `EFW Index`   = efw_index) %>% 
+  
+  # now produce the plot
   ggplot(data = .,
-         aes(x = region_name,
-             y = efw_index))+
+         aes(x = `Region Name`,
+             y = `EFW Index`))+
   geom_col(stat = "identity", 
            width = .75, 
-           aes(fill = region_name)) +
+           aes(fill = `Region Name`)) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust=1),
         legend.position = "none") +
@@ -119,17 +130,23 @@ ggplotly(p, tooltip = c("x","y"))
 Clearly we can see that the North American countries have the highest average EFW scores with East Asia and Europe coming in second and third, respectively. Next, let's look at the pattern for high income v. low income countries.
 
 ```{r income}
-
+# EFW by income group
 p <- efwpnl %>% 
   filter(year == 2019, !is.na(income_group)) %>% 
   group_by(income_group) %>% 
-  summarize(efw_index = mean(efw_index, na.rm = T)) %>% 
+  summarize(efw_index = round(mean(efw_index, na.rm = T), 2)) %>% 
+  
+  # subset and rename cols
+  select(`Income Group` = income_group,
+         `EFW Index`   = efw_index) %>% 
+  
+  # now produce the plot  
   ggplot(data = .,
-         aes(x = income_group,
-             y = efw_index))+
+         aes(x = `Income Group`,
+             y = `EFW Index`))+
   geom_col(stat = "identity", 
            width = .75, 
-           aes(fill = income_group)) +
+           aes(fill = `Income Group`)) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust=1),
         legend.position = "none") +
@@ -140,6 +157,7 @@ p <- efwpnl %>%
        x = "",
        y = "Avg. Economic Freedom Score")
 
+# render plot
 ggplotly(p, tooltip = c("x","y"))
 
 ```
@@ -157,15 +175,22 @@ actually have data for. To see this, let's look at the Middle East and North
 Africa (MENA).
 
 ```{r coverage}
-
+# EFW coverage in MENA
 p <- efwpnl %>% 
   filter(region_name == "Middle East & North Africa") %>% 
-  mutate(efw_present = !is.na(efw_index)) %>% 
-  select(country_name, year, efw_present) %>% 
+  mutate(efw_present = !is.na(efw_index),
+         year        = factor(year)) %>% 
+  
+  # subset and rename cols
+  select(`Country Name` = country_name, 
+         `Data Year`    = year, 
+         `EFW Present`  = efw_present) %>% 
+  
+  # now produce the plot
   ggplot(data = .,
-         aes(x  = factor(year),
-             y = country_name))+
-  geom_raster(aes(fill = efw_present)) +
+         aes(x  = `Data Year`,
+             y = `Country Name`))+
+  geom_raster(aes(fill = `EFW Present`)) +
   scale_fill_manual(values = c("#999999", "#E69F00"),
                      name = "Data Present",
                      labels = c("Missing", "Present")) +
@@ -176,6 +201,7 @@ p <- efwpnl %>%
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
         axis.text.y = element_text(angle = 30, vjust = 0.5, hjust=1))
 
+# render plot
 ggplotly(p)
 
 ```
@@ -192,7 +218,7 @@ complete. Some notable exceptions are former countries from the Soviet Union,
 whose data series begin in 1995 (or earlier for Poland and Estonia).
 
 ```{r oecd}
-
+# EFW coverage in the OECD
 oecd <- c("AUS","AUT","BEL","CAN","CHL","CZE","DNK","EST","FIN","FRA","DEU",
           "GRC","HUN","ISL","IRL","ISR","ITA","JPN","KOR","LUX","MEX","NLD",
           "NZL","NOR","POL","PRT","SVK","SVN","ESP","SWE","CHE","TUR","GBR",
@@ -200,12 +226,19 @@ oecd <- c("AUS","AUT","BEL","CAN","CHL","CZE","DNK","EST","FIN","FRA","DEU",
 
 p <- efwpnl %>% 
   filter(iso_code %in% oecd) %>% 
-  mutate(efw_present = !is.na(efw_index)) %>% 
-  select(country_name, year, efw_present) %>% 
+  mutate(efw_present = !is.na(efw_index),
+         year        = factor(year)) %>% 
+  
+  # subset and rename cols
+  select(`Country Name` = country_name, 
+         `Year`         = year, 
+         `EFW Present`  = efw_present) %>% 
+  
+  # now produce the plot
   ggplot(data = .,
-         aes(x  = factor(year),
-             y = country_name))+
-  geom_raster(aes(fill = efw_present)) +
+         aes(x  = `Year`,
+             y = `Country Name`))+
+  geom_raster(aes(fill = `EFW Present`)) +
   scale_fill_manual(values = c("#999999", "#E69F00"),
                      name = "Data Present",
                      labels = c("Missing", "Present")) +
@@ -216,6 +249,7 @@ p <- efwpnl %>%
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
         axis.text.y = element_text(angle = 30, vjust = 0.5, hjust=1))
 
+# render plot
 ggplotly(p)
 
 ```

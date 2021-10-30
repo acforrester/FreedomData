@@ -1,5 +1,6 @@
 ---
-output: gfm
+output: github_document
+always_allow_html: true
 ---
 
 ```{r setup, include=FALSE}
@@ -7,6 +8,10 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
   )
+```
+
+```{r packages,echo=FALSE}
+pacman::p_load(tidyverse,kableExtra)
 ```
 
 # Freedom Data
@@ -18,14 +23,22 @@ knitr::opts_chunk$set(
 `FreedomData` is a data package that contains measures of economic freedom for 
 across countries and the U.S. states from two sources: 
 
-1. Economic Freedom of the World (EFW) 
-2. Economic Freedom of North America (EFNA)
+1. [Economic Freedom of the World (EFW)](www.fraserinstitute.org/economic-freedom/dataset) 
+2. [Human Freedom Index (HFI)](https://www.cato.org/human-freedom-index/2020)
+3. [Economic Freedom of North America (EFNA)](https://www.fraserinstitute.org/studies/economic-freedom-of-north-america-2020)
 
 To see additional documentation and examples, see [here](docs/index.html).
 
 Eventually the data will be updated to include the Human Freedom Index (HFI).
 
 ## Contents
+
+The `FreedomData` package contains the following lightly-cleaned datasets on economic and personal freedom:
+
+1. [Economic Freedom of the World (EFW)](https://acforrester.github.io/FreedomData/docs/reference/efw.html) 
+2. [Human Freedom Index (HFI)](https://acforrester.github.io/FreedomData/docs/reference/hfipnl.html)
+3. [Economic Freedom of North America (EFNA)](https://acforrester.github.io/FreedomData/docs/reference/efna.html)
+
 
 ## Installation
 
@@ -57,6 +70,46 @@ each year and is therefore spotty in earlier years. The number of countries in
 each year's `EFW` data changes as a result. Be sure to check which countries are
 included in your sample before conducting any empirical cross-country comparisons.
 
+```{r efw_coverage,echo=FALSE}
+# coverage by year
+FreedomData::efwpnl %>% 
+  group_by(`Year` = year) %>% 
+  filter(!is.na(efw_index)) %>% 
+  summarize(`Country Coverage` = n())%>%
+  kbl(caption = "Number of EFW Countries by Year")
+
+
+```
+
+### The Human Freedom Index (HFI)
+
+The [Human Freedom Index (HFI)](https://www.cato.org/human-freedom-index/2020) by Ian Vásquez and Fred McMahon. The HFI provides a broad-based measure of freedom for countries by combining measures of personal and economic freedom. Personal and economic freedom are measured using a combination of 76 indicators covering the areas below:
+
+| Area             | Description                                      |
+|:-----------------|:-------------------------------------------------|
+| Area 1A          | Rule of Law                                      |
+| Area 1B          | Security & Safety                                |
+| Area 2A          | Movement                                         |
+| Area 2B          | Religious Freedom                                |
+| Area 2C          | Association, Assembly, &<br /> Civil Society     |
+| Area 2D          | Expression & Information                         |
+| Area 2E          | Identity & Relationships                         |
+| Personal Freedom | Composite personal freedom index                 |    
+| Economic Freedom | Economic Freedom of the World (EFW) Score        |
+| Human Freedom    | Composite index of personal and economic freedom |
+
+The `HFI` index is then an equally weighted average of personal and economic freedom. Similar to the EFW report, the number of countries covered by the HFI increases with each subsequent year.
+
+```{r hfi_coverage,echo=FALSE}
+# coverage by year
+FreedomData::hfipnl %>% 
+  group_by(`Year` = year) %>% 
+  filter(!is.na(human_freedom)) %>% 
+  summarize(`Country Coverage` = n()) %>%
+  kbl(caption = "Number of HFI Countries by Year")
+
+```
+
 ### Economic Freedom of North America (EFNA)
 
 The Economic Freedom of North America (EFNA) report from Stansel et al. provides
@@ -70,7 +123,7 @@ cross-country equivalent, the EFW, and is comprised of the following indicators.
 | Area 2    | Taxes                             |
 | Area 3    | Labor Market Freedom              |
 
-The `EFNA` index itself is an equally weighted average of the three areas. 
+The `EFNA` index itself is an equally weighted average of the three areas. The `EFNA` covers the 50 U.S. states, exlcuding the District of Columbia and territories.
 
 ## Citations
 
@@ -78,12 +131,11 @@ James Gwartney, Robert Lawson, Joshua Hall, and Ryan Murphy (2021). *Economic Fr
 
 Dean Stansel, José Torra, and Fred McMahon (2020). *Economic Freedom of North America 2020*. Fraser Institute. [https://www.fraserinstitute.org/studies/economic-freedom-of-north-america-2020](https://www.fraserinstitute.org/studies/economic-freedom-of-north-america-2020)
 
+Ian Vásquez and Fred McMahon (2020). *The Human Freedom Index 2020*. Cato Institute and the Fraser Institute. [https://www.cato.org/human-freedom-index/2020](https://www.cato.org/human-freedom-index/2020)
+
 ## Changelog
 
+- 10/30/2021: Add Human Freedom Index (HFI) and perform various updates. 
 - 10/16/2021: First release to overwrite old `EconFreedom` package.
-
-
-
-
 
 
