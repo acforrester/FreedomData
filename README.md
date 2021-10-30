@@ -7,7 +7,7 @@
 ## About
 
 `FreedomData` is a data package that contains measures of economic
-freedom for across countries and the U.S. states from two sources:
+freedom for across countries and the U.S. states from three sources:
 
 1.  [Economic Freedom of the World
     (EFW)](www.fraserinstitute.org/economic-freedom/dataset)
@@ -16,11 +16,8 @@ freedom for across countries and the U.S. states from two sources:
 3.  [Economic Freedom of North America
     (EFNA)](https://www.fraserinstitute.org/studies/economic-freedom-of-north-america-2020)
 
-To see additional documentation and examples, see
-[here](docs/index.html).
-
-Eventually the data will be updated to include the Human Freedom Index
-(HFI).
+A link back to the GitHub repository is
+[here](https://github.com/acforrester/FreedomData).
 
 ## Contents
 
@@ -45,9 +42,11 @@ devtools::install_github("acforrester/FreedomData")
 
 ### Economic Freedom of the World (EFW)
 
-The Economic Freedom of the World (EFW) report is produced by Gwartney
-et al. and provides a quantitative index of the quality of countries’
-economic institutions. The index contains the following elements:
+The [Economic Freedom of the World
+(EFW)](https://www.fraserinstitute.org/studies/economic-freedom-of-the-world-2021-annual-report)
+report is produced by Gwartney et al. and provides a quantitative index
+of the quality of countries’ economic institutions. The index contains
+the following elements:
 
 | Area                           | Description                      |
 |:-------------------------------|:---------------------------------|
@@ -425,11 +424,12 @@ Country Coverage
 
 ### Economic Freedom of North America (EFNA)
 
-The Economic Freedom of North America (EFNA) report from Stansel et
-al. provides a quantitative index that measures the quality of economic
-institutions at the subnational level, viz. the U.S. states. The index
-is designed to mimic the cross-country equivalent, the EFW, and is
-comprised of the following indicators.
+The [Economic Freedom of North America
+(EFNA)](https://www.fraserinstitute.org/studies/economic-freedom-of-north-america-2020)
+report from Stansel et al. provides a quantitative index that measures
+the quality of economic institutions at the subnational level, viz. the
+U.S. states. The index is designed to mimic the cross-country
+equivalent, the EFW, and is comprised of the following indicators.
 
 | Area   | Description          |
 |:-------|:---------------------|
@@ -438,7 +438,7 @@ comprised of the following indicators.
 | Area 3 | Labor Market Freedom |
 
 The `EFNA` index itself is an equally weighted average of the three
-areas. The `EFNA` covers the 50 U.S. states, exlcuding the District of
+areas. The `EFNA` covers the 50 U.S. states, excluding the District of
 Columbia and territories.
 
 ## Citations
@@ -455,9 +455,3 @@ North America 2020*. Fraser Institute.
 Ian Vásquez and Fred McMahon (2020). *The Human Freedom Index 2020*.
 Cato Institute and the Fraser Institute.
 <https://www.cato.org/human-freedom-index/2020>
-
-## Changelog
-
--   10/30/2021: Add Human Freedom Index (HFI) and perform various
-    updates.
--   10/16/2021: First release to overwrite old `EconFreedom` package.

@@ -90,8 +90,7 @@ efwpnl %>%
 
 # A Quick Descriptive Analysis
 
-Here I will show the basic usage of the EFW data and a brief analysis. Here I 
-will use the `tidyverse` and `plotly` packages to parse and analyze the data.
+Here I will show the basic usage of the EFW data and a brief analysis. Here I  will use the `tidyverse` and `plotly` packages to parse and analyze the data.
 
 ## Economic Freedom by Region
 
