@@ -25,11 +25,11 @@ The `FreedomData` package contains the following lightly-cleaned
 datasets on economic and personal freedom:
 
 1.  [Economic Freedom of the World
-    (EFW)](https://acforrester.github.io/FreedomData/docs/reference/efw.html)
+    (EFW)](https://acforrester.github.io/FreedomData/reference/efw.html)
 2.  [Human Freedom Index
-    (HFI)](https://acforrester.github.io/FreedomData/docs/reference/hfipnl.html)
+    (HFI)](https://acforrester.github.io/FreedomData/reference/hfipnl.html)
 3.  [Economic Freedom of North America
-    (EFNA)](https://acforrester.github.io/FreedomData/docs/reference/efna.html)
+    (EFNA)](https://acforrester.github.io/FreedomData/reference/efna.html)
 
 ## Installation
 
