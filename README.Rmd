@@ -20,8 +20,7 @@ pacman::p_load(tidyverse,kableExtra)
 
 ## About
 
-`FreedomData` is a data package that contains measures of economic freedom for 
-across countries and the U.S. states from three sources: 
+`FreedomData` is a data package that contains measures of economic freedom for  countries and the U.S. states from three sources: 
 
 1. [Economic Freedom of the World (EFW)](www.fraserinstitute.org/economic-freedom/dataset) 
 2. [Human Freedom Index (HFI)](https://www.cato.org/human-freedom-index/2020)
@@ -33,7 +32,7 @@ A link back to the GitHub repository is [here](https://github.com/acforrester/Fr
 
 The `FreedomData` package contains the following lightly-cleaned datasets on economic and personal freedom:
 
-1. [Economic Freedom of the World (EFW)](https://acforrester.github.io/FreedomData/reference/efw.html) 
+1. [Economic Freedom of the World (EFW)](https://acforrester.github.io/FreedomData/reference/efwpnl.html) 
 2. [Human Freedom Index (HFI)](https://acforrester.github.io/FreedomData/reference/hfipnl.html)
 3. [Economic Freedom of North America (EFNA)](https://acforrester.github.io/FreedomData/reference/efna.html)
 

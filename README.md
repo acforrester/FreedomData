@@ -7,7 +7,7 @@
 ## About
 
 `FreedomData` is a data package that contains measures of economic
-freedom for across countries and the U.S. states from three sources:
+freedom for countries and the U.S. states from three sources:
 
 1.  [Economic Freedom of the World
     (EFW)](www.fraserinstitute.org/economic-freedom/dataset)
@@ -25,7 +25,7 @@ The `FreedomData` package contains the following lightly-cleaned
 datasets on economic and personal freedom:
 
 1.  [Economic Freedom of the World
-    (EFW)](https://acforrester.github.io/FreedomData/reference/efw.html)
+    (EFW)](https://acforrester.github.io/FreedomData/reference/efwpnl.html)
 2.  [Human Freedom Index
     (HFI)](https://acforrester.github.io/FreedomData/reference/hfipnl.html)
 3.  [Economic Freedom of North America
